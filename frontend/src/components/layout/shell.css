@@ -1,0 +1,603 @@
+/* ==========================================================================
+   Application shell
+   ========================================================================== */
+
+.lo-shell {
+  display: flex;
+  min-height: 100dvh;
+  background: var(--surface-dim);
+}
+
+/* ---- sidebar ------------------------------------------------------------- */
+.lo-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-3);
+  background: var(--surface);
+  border-right: 1px solid var(--outline-variant);
+  transition: width var(--dur-medium) var(--ease-standard);
+  z-index: 30;
+}
+
+.lo-sidebar--collapsed {
+  width: var(--sidebar-width-collapsed);
+  align-items: center;
+}
+
+.lo-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-2);
+  text-decoration: none;
+  color: inherit;
+  min-height: 44px;
+}
+
+.lo-brand__mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: var(--on-surface);
+  color: var(--surface);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: -0.04em;
+}
+
+.lo-brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  min-width: 0;
+}
+
+.lo-brand__name {
+  font-weight: 750;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  color: var(--on-surface);
+}
+
+.lo-brand__tag {
+  font-size: var(--label-sm);
+  color: var(--on-surface-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lo-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.lo-nav__section {
+  padding: var(--sp-4) var(--sp-3) var(--sp-1);
+  font-size: var(--label-sm);
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--on-surface-faint);
+}
+
+.lo-nav__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--radius-md);
+  color: var(--on-surface-variant);
+  text-decoration: none;
+  font-size: var(--body-md);
+  font-weight: 550;
+  white-space: nowrap;
+  transition: background-color var(--dur-short) var(--ease-standard),
+    color var(--dur-short) var(--ease-standard);
+}
+
+.lo-nav__link:hover {
+  background: var(--state-hover);
+  color: var(--on-surface);
+}
+
+.lo-nav__link.is-active {
+  background: var(--state-selected);
+  color: var(--on-surface);
+  font-weight: 650;
+}
+
+/* The active item carries a bar as well as a tone, so selection survives
+   greyscale and low-contrast displays. */
+.lo-nav__link.is-active::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 22px;
+  border-radius: 0 3px 3px 0;
+  background: var(--on-surface);
+}
+
+.lo-sidebar--collapsed .lo-nav__link {
+  justify-content: center;
+  padding: 0;
+}
+
+.lo-nav__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.lo-nav__badge {
+  margin-left: auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--on-surface);
+  color: var(--surface);
+  font-size: var(--label-sm);
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.lo-sidebar__foot {
+  border-top: 1px solid var(--outline-variant);
+  padding-top: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* ---- level card ---------------------------------------------------------- */
+.lo-level {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px var(--sp-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-container);
+}
+
+.lo-level__badge {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--on-surface);
+  color: var(--surface);
+  font-weight: 800;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.lo-level__meta {
+  min-width: 0;
+  flex: 1;
+}
+
+.lo-level__title {
+  font-size: var(--label-md);
+  font-weight: 650;
+  color: var(--on-surface);
+}
+
+.lo-level__bar {
+  height: 5px;
+  border-radius: var(--radius-full);
+  background: var(--outline-variant);
+  overflow: hidden;
+  margin-top: 5px;
+}
+
+.lo-level__fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--on-surface);
+  transition: width var(--dur-long) var(--ease-standard);
+}
+
+/* ---- main ---------------------------------------------------------------- */
+.lo-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.lo-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  height: var(--header-height);
+  padding: 0 var(--sp-5);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--outline-variant);
+}
+
+.lo-topbar__title {
+  font-size: var(--title-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--on-surface);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lo-topbar__spacer {
+  flex: 1;
+}
+
+.lo-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.lo-iconbtn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  position: relative;
+  transition: background-color var(--dur-short) var(--ease-standard),
+    color var(--dur-short) var(--ease-standard);
+}
+
+.lo-iconbtn:hover {
+  background: var(--state-hover);
+  color: var(--on-surface);
+}
+
+.lo-iconbtn__dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-full);
+  background: var(--on-surface);
+  color: var(--surface);
+  font-size: 10px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--surface);
+}
+
+.lo-content {
+  flex: 1;
+  padding: var(--sp-6) var(--sp-5) var(--sp-12);
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ---- page header --------------------------------------------------------- */
+.lo-page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-6);
+}
+
+.lo-page-head__title {
+  margin: 0;
+  font-size: var(--headline-md);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  color: var(--on-surface);
+}
+
+.lo-page-head__subtitle {
+  margin: 4px 0 0;
+  color: var(--on-surface-variant);
+  font-size: var(--body-md);
+  max-width: 62ch;
+}
+
+.lo-page-head__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+/* ---- grids --------------------------------------------------------------- */
+.lo-grid {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.lo-grid--stats {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.lo-grid--cards {
+  grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
+}
+
+.lo-grid--split {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+
+.lo-grid--halves {
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+}
+
+.lo-section {
+  margin-top: var(--sp-8);
+}
+
+.lo-section:first-child {
+  margin-top: 0;
+}
+
+.lo-panel {
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+}
+
+/* ---- mobile bottom navigation -------------------------------------------- */
+.lo-bottomnav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: none;
+  align-items: stretch;
+  justify-content: space-around;
+  height: 64px;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-top: 1px solid var(--outline-variant);
+}
+
+.lo-bottomnav__link {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-decoration: none;
+  color: var(--on-surface-muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  min-height: 48px;
+  position: relative;
+}
+
+.lo-bottomnav__link.is-active {
+  color: var(--on-surface);
+}
+
+.lo-bottomnav__link.is-active::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  width: 26px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--on-surface);
+}
+
+/* ---- fab ----------------------------------------------------------------- */
+.lo-fab {
+  position: fixed;
+  right: var(--sp-5);
+  bottom: var(--sp-6);
+  z-index: 41;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--on-surface);
+  color: var(--surface);
+  box-shadow: var(--elev-4);
+  cursor: pointer;
+  transition: transform var(--dur-short) var(--ease-standard),
+    box-shadow var(--dur-short) var(--ease-standard);
+}
+
+.lo-fab:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: var(--elev-5);
+}
+
+.lo-fab:active {
+  transform: scale(0.97);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .lo-grid--split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .lo-sidebar {
+    display: none;
+  }
+
+  .lo-bottomnav {
+    display: flex;
+  }
+
+  .lo-content {
+    padding: var(--sp-4) var(--sp-4) 96px;
+  }
+
+  .lo-topbar {
+    padding: 0 var(--sp-4);
+  }
+
+  .lo-topbar__title {
+    font-size: var(--title-md);
+  }
+
+  .lo-page-head {
+    margin-bottom: var(--sp-4);
+  }
+
+  .lo-page-head__title {
+    font-size: var(--headline-sm);
+  }
+
+  .lo-fab {
+    bottom: 80px;
+  }
+
+  .lo-panel {
+    padding: var(--sp-4);
+  }
+}
+
+/* ==========================================================================
+   Auth pages
+   ========================================================================== */
+.lo-auth {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--surface);
+}
+
+.lo-auth__aside {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--sp-12) var(--sp-10);
+  background: var(--on-surface);
+  color: var(--surface);
+  overflow: hidden;
+}
+
+.lo-auth__headline {
+  font-size: clamp(2rem, 3.4vw, 3rem);
+  font-weight: 780;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+  margin: 0 0 var(--sp-4);
+  max-width: 16ch;
+}
+
+.lo-auth__lede {
+  font-size: var(--body-lg);
+  opacity: 0.72;
+  max-width: 44ch;
+  margin: 0;
+}
+
+.lo-auth__points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin: var(--sp-8) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lo-auth__point {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: var(--body-md);
+  opacity: 0.85;
+}
+
+.lo-auth__main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-8) var(--sp-6);
+}
+
+.lo-auth__card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.lo-auth__title {
+  font-size: var(--headline-sm);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  margin: 0 0 4px;
+}
+
+.lo-auth__sub {
+  color: var(--on-surface-variant);
+  margin: 0 0 var(--sp-6);
+}
+
+.lo-auth__divider {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: var(--sp-5) 0;
+  color: var(--on-surface-muted);
+  font-size: var(--label-md);
+}
+
+.lo-auth__divider::before,
+.lo-auth__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--outline-variant);
+}
+
+@media (max-width: 900px) {
+  .lo-auth {
+    grid-template-columns: 1fr;
+  }
+
+  .lo-auth__aside {
+    display: none;
+  }
+}

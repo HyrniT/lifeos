@@ -1,0 +1,44 @@
+# --- Java / Maven ---
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.class
+*.jar
+*.war
+.mvn/timing.properties
+
+# --- Node ---
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+.eslintcache
+
+# --- Env & secrets ---
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# --- IDE ---
+.idea/
+*.iml
+.vscode/
+!.vscode/extensions.json
+.settings/
+.project
+.classpath
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Logs / runtime ---
+logs/
+*.log
+npm-debug.log*
+coverage/
+# Written by frontend/scripts/visual-check.mjs on every run.
+screenshots/

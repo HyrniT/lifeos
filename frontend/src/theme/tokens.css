@@ -1,0 +1,364 @@
+/* ==========================================================================
+   LifeOS design tokens — Material Design 3, monochrome
+
+   The palette carries no hue at all. That is a product decision (the reference
+   is myhabitgame.com), and it has a useful side effect: because every colour
+   differs only in lightness, the whole interface — charts included — is
+   identical for every type of colour vision, and survives greyscale printing.
+
+   The cost is that colour alone can never separate more than a handful of
+   series, so every chart pairs its tone with a second encoding: a pattern fill,
+   a distinct marker shape, or a direct label.
+   ========================================================================== */
+
+:root {
+  /* ---- surfaces (MD3 tonal elevation, light) ---------------------------- */
+  --surface: #ffffff;
+  --surface-dim: #f2f2f2;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f8f8f8;
+  --surface-container: #f2f2f2;
+  --surface-container-high: #ececec;
+  --surface-container-highest: #e5e5e5;
+  --inverse-surface: #171717;
+  --on-inverse-surface: #f5f5f5;
+
+  /* ---- ink -------------------------------------------------------------- */
+  --on-surface: #101010;
+  --on-surface-variant: #565656;
+  --on-surface-muted: #8a8a8a;
+  --on-surface-faint: #b4b4b4;
+
+  /* ---- primary (monochrome: the accent IS ink) -------------------------- */
+  --primary: #101010;
+  --on-primary: #ffffff;
+  --primary-container: #e5e5e5;
+  --on-primary-container: #101010;
+
+  /* ---- outlines --------------------------------------------------------- */
+  --outline: #c6c6c6;
+  --outline-variant: #e4e4e4;
+  --outline-strong: #9a9a9a;
+
+  /* ---- status (the one place hue is allowed, and only for state) --------
+     Kept desaturated so a status chip never competes with the data. They are
+     always shipped with an icon and a label, never colour alone. */
+  --status-good: #1f7a3d;
+  --status-good-bg: #e8f4ec;
+  --status-warning: #8a6100;
+  --status-warning-bg: #f8f0dd;
+  --status-serious: #9a4a05;
+  --status-serious-bg: #fbeee2;
+  --status-critical: #a41d1d;
+  --status-critical-bg: #fbeaea;
+
+  /* ---- chart: categorical (max 4 + "Other"), fixed order, never cycled --- */
+  --chart-1: #101010;
+  --chart-2: #5c5c5c;
+  --chart-3: #8f8f8f;
+  --chart-4: #c2c2c2;
+  --chart-other: #dedede;
+
+  /* ---- chart: sequential (one ramp, light -> dark) ---------------------- */
+  --seq-0: #f2f2f2;
+  --seq-1: #d9d9d9;
+  --seq-2: #b0b0b0;
+  --seq-3: #7d7d7d;
+  --seq-4: #4a4a4a;
+  --seq-5: #101010;
+
+  /* ---- chart chrome ----------------------------------------------------- */
+  --chart-surface: #ffffff;
+  --chart-grid: #ececec;
+  --chart-axis: #c6c6c6;
+  --chart-label: #565656;
+  --chart-crosshair: #9a9a9a;
+
+  /* ---- elevation (MD3: shadow, subtle in a flat monochrome system) ------ */
+  --elev-0: none;
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --elev-2: 0 1px 2px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.06);
+  --elev-3: 0 4px 8px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.06);
+  --elev-4: 0 6px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --elev-5: 0 10px 24px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.06);
+
+  /* ---- state layers (MD3 opacities) ------------------------------------- */
+  --state-hover: rgba(16, 16, 16, 0.06);
+  --state-focus: rgba(16, 16, 16, 0.1);
+  --state-pressed: rgba(16, 16, 16, 0.12);
+  --state-selected: rgba(16, 16, 16, 0.08);
+  --scrim: rgba(0, 0, 0, 0.4);
+
+  /* ---- shape (MD3 corner scale) ----------------------------------------- */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 28px;
+  --radius-full: 999px;
+
+  /* ---- spacing (4dp grid) ----------------------------------------------- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* ---- type scale (MD3) -------------------------------------------------- */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+
+  --display-lg: 3.5rem;
+  --display-md: 2.75rem;
+  --headline-lg: 2rem;
+  --headline-md: 1.75rem;
+  --headline-sm: 1.5rem;
+  --title-lg: 1.375rem;
+  --title-md: 1rem;
+  --title-sm: 0.875rem;
+  --body-lg: 1rem;
+  --body-md: 0.875rem;
+  --body-sm: 0.8125rem;
+  --label-lg: 0.875rem;
+  --label-md: 0.75rem;
+  --label-sm: 0.6875rem;
+
+  /* ---- motion (MD3 easing + duration) ------------------------------------ */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --ease-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --dur-short: 150ms;
+  --dur-medium: 250ms;
+  --dur-long: 400ms;
+  --dur-xlong: 600ms;
+
+  --header-height: 64px;
+  --sidebar-width: 264px;
+  --sidebar-width-collapsed: 76px;
+}
+
+/* ==========================================================================
+   Dark theme — chosen steps, not an inverted light theme. The ramps are
+   re-anchored to the dark surface so contrast holds in both directions.
+   ========================================================================== */
+:root[data-theme='dark'] {
+  --surface: #0a0a0a;
+  --surface-dim: #070707;
+  --surface-bright: #262626;
+  --surface-container-lowest: #050505;
+  --surface-container-low: #121212;
+  --surface-container: #171717;
+  --surface-container-high: #1f1f1f;
+  --surface-container-highest: #282828;
+  --inverse-surface: #ececec;
+  --on-inverse-surface: #151515;
+
+  --on-surface: #f4f4f4;
+  --on-surface-variant: #a9a9a9;
+  --on-surface-muted: #7c7c7c;
+  --on-surface-faint: #575757;
+
+  --primary: #f4f4f4;
+  --on-primary: #101010;
+  --primary-container: #2b2b2b;
+  --on-primary-container: #f4f4f4;
+
+  --outline: #4d4d4d;
+  --outline-variant: #2c2c2c;
+  --outline-strong: #6f6f6f;
+
+  --status-good: #5cc98a;
+  --status-good-bg: #12281b;
+  --status-warning: #e0b355;
+  --status-warning-bg: #2b2110;
+  --status-serious: #eb9455;
+  --status-serious-bg: #2e1d10;
+  --status-critical: #f0736e;
+  --status-critical-bg: #2e1414;
+
+  --chart-1: #f5f5f5;
+  --chart-2: #b3b3b3;
+  --chart-3: #7d7d7d;
+  --chart-4: #525252;
+  --chart-other: #3a3a3a;
+
+  --seq-0: #171717;
+  --seq-1: #2e2e2e;
+  --seq-2: #4d4d4d;
+  --seq-3: #7a7a7a;
+  --seq-4: #b0b0b0;
+  --seq-5: #f5f5f5;
+
+  --chart-surface: #0a0a0a;
+  --chart-grid: #232323;
+  --chart-axis: #4d4d4d;
+  --chart-label: #a9a9a9;
+  --chart-crosshair: #6f6f6f;
+
+  /* Shadows read as noise on a near-black surface; elevation is carried by the
+     tonal surface steps above, with only a whisper of shadow for lift. */
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --elev-2: 0 2px 6px rgba(0, 0, 0, 0.55);
+  --elev-3: 0 4px 10px rgba(0, 0, 0, 0.6);
+  --elev-4: 0 6px 16px rgba(0, 0, 0, 0.65);
+  --elev-5: 0 12px 28px rgba(0, 0, 0, 0.7);
+
+  --state-hover: rgba(255, 255, 255, 0.08);
+  --state-focus: rgba(255, 255, 255, 0.12);
+  --state-pressed: rgba(255, 255, 255, 0.16);
+  --state-selected: rgba(255, 255, 255, 0.1);
+  --scrim: rgba(0, 0, 0, 0.65);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root,
+#admin-root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--body-md);
+  line-height: 1.55;
+  color: var(--on-surface);
+  background: var(--surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'tnum';
+  transition: background-color var(--dur-medium) var(--ease-standard),
+    color var(--dur-medium) var(--ease-standard);
+}
+
+/* Numbers in tables and stat tiles must line up column-wise. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+::selection {
+  background: var(--on-surface);
+  color: var(--surface);
+}
+
+/* Focus ring: visible, monochrome, and never removed. */
+:focus-visible {
+  outline: 2px solid var(--on-surface);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* Scrollbars tuned to the palette instead of the OS default blue. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--outline) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--outline-variant);
+  border-radius: var(--radius-full);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--outline);
+  background-clip: content-box;
+}
+
+/* Everything with motion respects the OS setting. Streak counters and level-up
+   animations are exactly the kind of thing that triggers vestibular symptoms. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   Utility primitives shared by both apps
+   ========================================================================== */
+.lo-card {
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elev-1);
+  transition: box-shadow var(--dur-medium) var(--ease-standard),
+    border-color var(--dur-medium) var(--ease-standard),
+    transform var(--dur-medium) var(--ease-standard);
+}
+
+.lo-card--interactive:hover {
+  box-shadow: var(--elev-3);
+  border-color: var(--outline);
+  transform: translateY(-2px);
+}
+
+.lo-card--flat {
+  box-shadow: none;
+  background: var(--surface-container-low);
+}
+
+.lo-scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Screen-reader-only, used for chart summaries and icon-only buttons. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Grain overlay: a single monochrome interface can read as sterile; a barely
+   perceptible texture gives the surfaces some material quality. */
+.lo-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  border-radius: inherit;
+}

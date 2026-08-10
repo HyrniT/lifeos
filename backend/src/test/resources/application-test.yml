@@ -1,0 +1,27 @@
+# Test overrides. The datasource is injected by PostgresBackedTest.
+lifeos:
+  jwt:
+    secret: test-only-signing-key-that-is-comfortably-longer-than-the-sixty-four-bytes-hs512-demands
+  admin:
+    enabled: false
+  push:
+    enabled: false
+  cors:
+    allowed-origins: http://localhost:5273
+
+  # The schedulers are driven explicitly in the tests that care about them, so
+  # leaving them on a timer would only make failures depend on how long a test took.
+  outbox:
+    poll-ms: 3600000
+  reminders:
+    interval-ms: 3600000
+    habit-interval-ms: 3600000
+    goal-interval-ms: 3600000
+  notifications:
+    dispatch-ms: 3600000
+    summary-interval-ms: 3600000
+
+logging:
+  level:
+    com.lifeos: INFO
+    org.springframework: WARN

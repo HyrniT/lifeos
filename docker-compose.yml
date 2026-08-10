@@ -1,0 +1,37 @@
+# =============================================================================
+#  Local development: one container, and only because a database has to live
+#  somewhere. The application itself runs from your IDE or `mvn spring-boot:run`.
+#
+#  If you already have Postgres on 5432, this will not collide — it is on 55432.
+#
+#      docker compose up -d
+#      cd backend && mvn spring-boot:run
+#      cd frontend && npm run dev
+#
+#  No Docker? Any Postgres 14+ works. Create a database called `lifeos` and
+#  point DATABASE_URL at it; the application creates its own schemas on boot.
+# =============================================================================
+name: lifeos
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: lifeos-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-lifeos}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-lifeos_secret}
+      POSTGRES_DB: lifeos
+    # 55432, not 5432: a machine with its own Postgres already owns that port,
+    # and silently connecting to the wrong server is a miserable half-hour.
+    ports: ["${POSTGRES_PORT:-55432}:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-lifeos} -d lifeos"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="description" content="LifeOS administration console." />
+    <meta name="theme-color" content="#0A0A0A" />
+    <link rel="icon" type="image/svg+xml" href="/icon-admin.svg" />
+    <title>LifeOS · Admin</title>
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('lifeos.admin.theme')
+          // The console defaults to dark: it is usually on a wall display or a
+          // second monitor, and the operator is not staring at a white page all day.
+          document.documentElement.setAttribute('data-theme', stored === 'light' ? 'light' : 'dark')
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'dark')
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="admin-root"></div>
+    <script type="module" src="/src/admin.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+# =============================================================================
+#  Render blueprint — the free plan.
+#
+#  Import this with New > Blueprint and point it at your fork. Everything with
+#  `sync: false` is a secret Render will prompt you for; nothing secret is in
+#  this file or in the repository.
+#
+#  Free plan, honestly stated: 512 MB RAM, 0.1 CPU, and the instance is stopped
+#  after 15 minutes with no traffic. The first request after that waits ~50
+#  seconds for a JVM to start. The keep-alive workflow in .github/workflows
+#  hides most of it; nothing removes it entirely on this plan.
+# =============================================================================
+services:
+  - type: web
+    name: lifeos
+    runtime: docker
+    plan: free
+    region: singapore          # closest free region to Vietnam
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+
+    # Render restarts the instance if this ever fails, so it must not require a
+    # token and must not touch the database on every call — /actuator/health
+    # with show-details: never is a liveness answer, not a dependency check.
+    healthCheckPath: /actuator/health
+
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+
+      # ---- database ------------------------------------------------------
+      # From the Neon dashboard. The JDBC form, not the psql form:
+      #   jdbc:postgresql://ep-xxx.ap-southeast-1.aws.neon.tech/lifeos?sslmode=require
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USERNAME
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+
+      # ---- security ------------------------------------------------------
+      # 64 bytes minimum; the app refuses to start on anything shorter or on the
+      # documented default.  Generate:  openssl rand -base64 96
+      - key: JWT_SECRET
+        generateValue: true
+
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false
+
+      # ---- the web app ---------------------------------------------------
+      # Your Vercel origin, with no trailing slash, e.g. https://lifeos.vercel.app
+      # Get this wrong and every browser request fails CORS while curl works.
+      - key: LIFEOS_CORS_ORIGINS
+        sync: false
+      # This service's own public URL, shown in the admin console.
+      - key: PUBLIC_URL
+        sync: false
+
+      # ---- optional ------------------------------------------------------
+      # Browser push. Leave unset and in-app notifications still work.
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_SUBJECT
+        value: mailto:admin@lifeos.local
+
+      # Google sign-in. Leave unset and the button hides itself.
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false

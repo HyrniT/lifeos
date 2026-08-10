@@ -1,0 +1,47 @@
+# =============================================================================
+#  Keeps the free Render instance from being stopped.
+#
+#  Render stops a free web service after 15 minutes without a request, and the
+#  next visitor waits ~50 seconds for the JVM to come back. A request every ten
+#  minutes keeps it warm.
+#
+#  What this costs and what it does not:
+#    - GitHub Actions bills a whole minute per run. Every 10 minutes is ~4,300
+#      minutes a month, which fits inside the 2,000-minute free allowance ONLY
+#      on a public repository, where Actions minutes are unmetered. On a private
+#      repo, raise the interval to */30 or drop this workflow.
+#    - Scheduled workflows are disabled automatically after 60 days of no
+#      commits on a public repo, and GitHub does not run them on time under
+#      load — treat "roughly every ten minutes" as the promise.
+#    - This does not buy uptime. It reduces cold starts. A free instance is
+#      still a free instance.
+#
+#  Set the REPO SECRET `HEALTH_URL` to https://<your-service>.onrender.com/actuator/health
+#  A secret, not a variable, only so the URL is not in the run log.
+# =============================================================================
+name: Keep alive
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping the health endpoint
+        env:
+          HEALTH_URL: ${{ secrets.HEALTH_URL }}
+        run: |
+          if [ -z "$HEALTH_URL" ]; then
+            echo "HEALTH_URL is not set - nothing to ping. Add it as a repository secret."
+            exit 0
+          fi
+          # --max-time 90, not the default: a cold start IS the case this exists
+          # for, and a 10-second timeout would give up in the middle of one and
+          # report failure on a service that was busy waking up.
+          code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 90 --retry 2 --retry-delay 15 "$HEALTH_URL")
+          echo "health -> HTTP $code"
+          [ "$code" = "200" ]

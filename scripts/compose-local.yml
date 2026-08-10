@@ -1,0 +1,16 @@
+# =============================================================================
+#  Overlay used by scripts/infra-up.sh.
+#
+#  The microservice edition of LifeOS declares a container called
+#  `lifeos-postgres` under a compose project also called `lifeos` — the same two
+#  names this repository uses. Starting this stack while that one is up would
+#  not create a second database, it would *recreate* the first one on a
+#  different port and hand it the other edition's data volume.
+#
+#  Running under `-p lifeos-mono` already separates the volume (it becomes
+#  `lifeos-mono_pgdata`). Only the container name is pinned in the file itself,
+#  so it is the one thing this overlay has to say.
+# =============================================================================
+services:
+  postgres:
+    container_name: lifeos-mono-postgres

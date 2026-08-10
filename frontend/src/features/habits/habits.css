@@ -1,0 +1,193 @@
+.lo-habit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  height: 100%;
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--dur-medium) var(--ease-standard),
+    box-shadow var(--dur-medium) var(--ease-standard);
+}
+
+.lo-habit:hover {
+  border-color: var(--outline);
+  box-shadow: var(--elev-3);
+}
+
+/* A completed habit is dimmed and gets a left rule — two signals, not just one,
+   so the state survives greyscale and low-contrast screens. */
+.lo-habit.is-done {
+  border-left: 3px solid var(--on-surface);
+}
+
+.lo-habit__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.lo-habit__icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--surface-container);
+  color: var(--on-surface);
+  cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-standard),
+    transform var(--dur-short) var(--ease-standard);
+}
+
+.lo-habit__icon:hover {
+  background: var(--surface-container-high);
+  transform: scale(1.05);
+}
+
+.lo-habit__meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.lo-habit__name {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: var(--title-md);
+  font-weight: 680;
+  letter-spacing: -0.015em;
+  color: var(--on-surface);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lo-habit__name:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lo-habit__sub {
+  display: block;
+  font-size: var(--body-sm);
+  color: var(--on-surface-muted);
+  text-transform: capitalize;
+}
+
+.lo-habit__more {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--on-surface-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.lo-habit__more:hover {
+  background: var(--state-hover);
+  color: var(--on-surface);
+}
+
+.lo-habit__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-2);
+  padding: var(--sp-3) 0;
+  border-top: 1px solid var(--outline-variant);
+  border-bottom: 1px solid var(--outline-variant);
+}
+
+.lo-habit__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.lo-habit__stat-value {
+  font-size: var(--title-md);
+  font-weight: 720;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--on-surface);
+}
+
+.lo-habit__stat-label {
+  font-size: var(--label-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--on-surface-faint);
+}
+
+.lo-habit__dots {
+  display: flex;
+  gap: 4px;
+}
+
+.lo-habit__dot {
+  flex: 1;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--outline-variant);
+  transition: background-color var(--dur-medium) var(--ease-standard);
+}
+
+.lo-habit__dot.is-filled {
+  background: var(--on-surface);
+}
+
+.lo-habit__foot {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: auto;
+}
+
+/* ---- detail drawer ------------------------------------------------------- */
+.lo-habit-detail__hero {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-5);
+  border-bottom: 1px solid var(--outline-variant);
+  margin-bottom: var(--sp-5);
+}
+
+.lo-habit-detail__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-6);
+}
+
+.lo-habit-detail__cell {
+  padding: var(--sp-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-container);
+}
+
+.lo-habit-detail__cell-value {
+  font-size: var(--title-lg);
+  font-weight: 720;
+  letter-spacing: -0.02em;
+  color: var(--on-surface);
+}
+
+.lo-habit-detail__cell-label {
+  font-size: var(--label-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--on-surface-muted);
+}

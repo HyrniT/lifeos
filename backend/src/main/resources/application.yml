@@ -1,0 +1,196 @@
+# =====================================================================
+#  LifeOS — one service, one database.
+#
+#  Ports are deliberately not the ones the microservice edition used, so both
+#  can run side by side on the same machine while you migrate:
+#      9080  this service        (was 8080-8086 + 8761 + 8000)
+#      5273  the web app in dev  (was 5173)
+#      4273  vite preview        (was 4173)
+#     55432  local Postgres      (was 5432 / 15432)
+# =====================================================================
+server:
+  # Render, Fly and Koyeb all inject PORT. 9080 is the local default.
+  port: ${PORT:9080}
+  error:
+    include-message: never
+    include-stacktrace: never
+  # Behind a platform's TLS terminator, so the app must trust X-Forwarded-*
+  # or every redirect and cookie it writes claims http://.
+  forward-headers-strategy: framework
+  shutdown: graceful
+
+spring:
+  application:
+    name: lifeos
+
+  # ------------------------------------------------------------- database
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:55432/lifeos}
+    username: ${DATABASE_USERNAME:lifeos}
+    password: ${DATABASE_PASSWORD:lifeos_secret}
+    hikari:
+      # Neon's free plan allows a small number of connections and the scheduler
+      # threads each want one; ten is comfortable and well inside the limit.
+      maximum-pool-size: ${DATABASE_POOL_SIZE:10}
+      minimum-idle: 2
+      connection-timeout: 20000
+      # Neon closes idle connections at the proxy. Recycling ours first turns a
+      # "connection reset" on the next request into nothing at all.
+      max-lifetime: 240000
+      idle-timeout: 120000
+      pool-name: lifeos-pool
+
+  jpa:
+    hibernate:
+      # Flyway owns the schema; Hibernate only checks that it matches.
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+        jdbc.batch_size: 30
+        order_inserts: true
+        format_sql: false
+
+  flyway:
+    # Enabled so Spring Boot registers the initialiser the EntityManagerFactory
+    # depends on; FlywayConfig replaces what that initialiser actually runs, and
+    # migrates all six schemas. This location is the one it would have used.
+    enabled: true
+    locations: classpath:db/migration/auth
+    baseline-on-migrate: true
+
+  # SSE holds a request open; MVC needs a matching async timeout.
+  mvc:
+    async:
+      request-timeout: 1800000
+
+  jackson:
+    default-property-inclusion: non_null
+
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+# =====================================================================
+lifeos:
+  jwt:
+    secret: ${JWT_SECRET:change-me-in-production-this-must-be-at-least-64-bytes-long-for-hs512-algorithm}
+    access-ttl-seconds: 3600         # 1 hour
+    refresh-ttl-seconds: 2592000     # 30 days
+
+  # The absolute URL this service is reachable at, used by the admin console.
+  public-url: ${PUBLIC_URL:}
+
+  events:
+    enabled: true
+
+  security:
+    # Comma-separated so @Value can bind it to String[]; a YAML list would resolve
+    # to the empty default and lock anonymous users out of the login endpoint.
+    public-paths: >-
+      /api/auth/register,/api/auth/login,/api/auth/refresh,/api/auth/logout,
+      /api/auth/verify-2fa,/api/auth/providers,/api/auth/oauth2/**,
+      /api/auth/forgot-password,/api/auth/reset-password
+    login:
+      max-account-attempts: 5
+      max-ip-attempts: 20
+      window-seconds: 900
+      lockout-seconds: 900
+
+  cors:
+    # The web app's origin. Set LIFEOS_CORS_ORIGINS to your Vercel URL in production.
+    allowed-origins: ${LIFEOS_CORS_ORIGINS:http://localhost:5273,http://localhost:4273}
+
+  admin:
+    enabled: ${ADMIN_SEED_ENABLED:true}
+    username: ${ADMIN_USERNAME:admin}
+    password: ${ADMIN_PASSWORD:admin}
+
+  totp:
+    issuer: LifeOS
+
+  oauth:
+    google:
+      client-id: ${GOOGLE_CLIENT_ID:}
+      client-secret: ${GOOGLE_CLIENT_SECRET:}
+      redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:5273/auth/google/callback}
+
+  # The outbox still exists. It is what makes an event durable before it is
+  # dispatched, which matters more now that a failed handler has no broker to
+  # redeliver from — the relay retries the row instead.
+  outbox:
+    poll-ms: 1000
+    batch-size: 100
+    max-attempts: 8
+    cleanup-cron: "0 30 3 * * *"
+
+  reminders:
+    interval-ms: 300000
+    habit-interval-ms: 300000
+    goal-interval-ms: 900000
+    catch-up-hours: 3
+    default-due-time: "18:00"
+    overdue-hour: "09:00"
+    streak-risk-hour: "21:00"
+    streak-risk-threshold: 3
+
+  notifications:
+    # Quiet hours end on a wall-clock minute, so the release job ticks every minute.
+    dispatch-ms: 60000
+    summary-interval-ms: 600000
+    cleanup-cron: "0 45 3 * * *"
+
+  analytics:
+    retention-cron: "0 20 3 * * *"
+
+  push:
+    enabled: ${PUSH_ENABLED:true}
+    # Generate a stable pair once and set both. Changing the public key silently
+    # invalidates every browser subscription already out there.
+    vapid:
+      public-key: ${VAPID_PUBLIC_KEY:}
+      private-key: ${VAPID_PRIVATE_KEY:}
+      subject: ${VAPID_SUBJECT:mailto:admin@lifeos.local}
+    ttl-seconds: 86400
+
+# =====================================================================
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # Health is what the platform's health check calls; nothing scrapes metrics.
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+
+logging:
+  level:
+    com.lifeos: ${LOG_LEVEL:INFO}
+    org.hibernate.SQL: WARN
+    org.flywaydb: INFO
+
+# =====================================================================
+#  Deployed profile: quieter, and it refuses to boot on the default secret.
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+logging:
+  level:
+    root: WARN
+    com.lifeos: INFO
+
+management:
+  endpoint:
+    health:
+      show-details: never

@@ -1,0 +1,400 @@
+/* ==========================================================================
+   Chart chrome. Grid and axes are deliberately recessive: the data is the only
+   thing on the page that should hold weight.
+   ========================================================================== */
+
+.lo-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.lo-chart__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+
+.lo-chart__heading {
+  min-width: 0;
+}
+
+.lo-chart__title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: var(--title-md);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--on-surface);
+}
+
+.lo-chart__hint {
+  display: inline-flex;
+  align-items: center;
+  color: var(--on-surface-muted);
+  cursor: help;
+}
+
+.lo-chart__subtitle {
+  margin: 2px 0 0;
+  font-size: var(--body-sm);
+  color: var(--on-surface-variant);
+}
+
+.lo-chart__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-shrink: 0;
+}
+
+.lo-chart__canvas {
+  width: 100%;
+  min-width: 0;
+}
+
+.lo-chart__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--outline-variant);
+  border-radius: var(--radius-md);
+  color: var(--on-surface-muted);
+  font-size: var(--body-sm);
+  background: var(--surface-container-low);
+}
+
+/* ---- legend ------------------------------------------------------------- */
+.lo-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lo-chart__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--label-md);
+  color: var(--on-surface-variant);
+}
+
+.lo-chart__swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1.5px solid transparent;
+  flex-shrink: 0;
+}
+
+.lo-chart__legend-label {
+  color: var(--on-surface-variant);
+}
+
+.lo-chart__legend-value {
+  color: var(--on-surface);
+  font-weight: 600;
+}
+
+/* ---- tooltip ------------------------------------------------------------ */
+.lo-chart__tooltip {
+  min-width: 168px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--inverse-surface);
+  color: var(--on-inverse-surface);
+  box-shadow: var(--elev-4);
+  font-size: var(--body-sm);
+  pointer-events: none;
+}
+
+.lo-chart__tooltip-title {
+  font-weight: 650;
+  margin-bottom: 6px;
+  font-size: var(--label-md);
+  opacity: 0.75;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.lo-chart__tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.lo-chart__tooltip-row.is-emphasis {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(128, 128, 128, 0.35);
+  font-weight: 650;
+}
+
+.lo-chart__tooltip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  /* A 2px ring keeps a dark swatch visible against the dark tooltip surface. */
+  box-shadow: 0 0 0 1.5px var(--inverse-surface);
+}
+
+.lo-chart__tooltip-label {
+  flex: 1;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+.lo-chart__tooltip-value {
+  font-weight: 650;
+}
+
+/* ---- table view --------------------------------------------------------- */
+.lo-chart__table {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Heatmap
+   ========================================================================== */
+.lo-heatmap {
+  display: flex;
+  gap: 3px;
+  min-width: max-content;
+  padding-bottom: var(--sp-1);
+}
+
+.lo-heatmap__week {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.lo-heatmap__cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid var(--outline-variant);
+  transition: transform var(--dur-short) var(--ease-standard),
+    outline-color var(--dur-short) var(--ease-standard);
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+  cursor: pointer;
+}
+
+.lo-heatmap__cell:hover,
+.lo-heatmap__cell:focus-visible {
+  transform: scale(1.25);
+  outline-color: var(--on-surface);
+  z-index: 1;
+}
+
+.lo-heatmap__scale {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--label-md);
+  color: var(--on-surface-muted);
+}
+
+.lo-heatmap__scale-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid var(--outline-variant);
+}
+
+.lo-heatmap__months {
+  display: flex;
+  gap: 3px;
+  min-width: max-content;
+  font-size: var(--label-sm);
+  color: var(--on-surface-muted);
+  margin-bottom: 4px;
+  height: 14px;
+}
+
+/* ==========================================================================
+   Progress ring (streaks, goal progress, level)
+   ========================================================================== */
+.lo-ring {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lo-ring__label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  text-align: center;
+  pointer-events: none;
+}
+
+.lo-ring__value {
+  font-size: var(--headline-sm);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--on-surface);
+}
+
+.lo-ring__caption {
+  font-size: var(--label-sm);
+  color: var(--on-surface-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ==========================================================================
+   Stat tile
+   ========================================================================== */
+.lo-stat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color var(--dur-medium) var(--ease-standard),
+    box-shadow var(--dur-medium) var(--ease-standard);
+}
+
+.lo-stat:hover {
+  border-color: var(--outline);
+  box-shadow: var(--elev-2);
+}
+
+.lo-stat__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.lo-stat__label {
+  font-size: var(--label-md);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--on-surface-muted);
+}
+
+.lo-stat__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-container);
+  color: var(--on-surface-variant);
+  flex-shrink: 0;
+}
+
+.lo-stat__value {
+  font-size: var(--headline-md);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--on-surface);
+}
+
+.lo-stat__foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--body-sm);
+  color: var(--on-surface-variant);
+}
+
+.lo-stat__delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 650;
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+  font-size: var(--label-md);
+}
+
+/* Direction is carried by an arrow glyph as well as the tone, so it survives
+   greyscale and colour-blind viewing. */
+.lo-stat__delta--up {
+  color: var(--status-good);
+  background: var(--status-good-bg);
+}
+
+.lo-stat__delta--down {
+  color: var(--status-critical);
+  background: var(--status-critical-bg);
+}
+
+.lo-stat__delta--flat {
+  color: var(--on-surface-variant);
+  background: var(--surface-container);
+}
+
+.lo-stat__spark {
+  margin-top: auto;
+  height: 34px;
+  width: 100%;
+}
+
+/* ==========================================================================
+   Recharts overrides — the library's defaults are too heavy for this system.
+   ========================================================================== */
+.recharts-cartesian-axis-tick text {
+  font-size: 11px;
+  fill: var(--chart-label);
+}
+
+.recharts-cartesian-grid line {
+  stroke: var(--chart-grid);
+}
+
+.recharts-cartesian-axis-line,
+.recharts-cartesian-axis-tick-line {
+  stroke: var(--chart-axis);
+}
+
+.recharts-tooltip-wrapper {
+  outline: none;
+  z-index: 20;
+}
+
+.recharts-surface {
+  overflow: visible;
+}
+
+@media (max-width: 640px) {
+  .lo-chart__header {
+    gap: var(--sp-2);
+  }
+
+  .lo-stat {
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  .lo-stat__value {
+    font-size: var(--headline-sm);
+  }
+}

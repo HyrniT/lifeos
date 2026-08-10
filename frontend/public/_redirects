@@ -1,0 +1,7 @@
+# Netlify rewrite rules.
+#
+# Order matters: the admin console must be matched before the catch-all, or every
+# /admin/* deep link falls through to the user app — which renders happily and
+# leaves you wondering why the console "logged you into the wrong thing".
+/admin/*   /admin/index.html   200
+/*         /index.html         200
