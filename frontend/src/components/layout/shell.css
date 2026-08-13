@@ -30,6 +30,19 @@
   align-items: center;
 }
 
+/* Holds the brand and, in the mobile drawer only, the close button. On the
+   desktop sidebar it wraps the brand alone and changes nothing about it. */
+.lo-brand-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.lo-brand-row .lo-brand {
+  flex: 1;
+  min-width: 0;
+}
+
 .lo-brand {
   display: flex;
   align-items: center;

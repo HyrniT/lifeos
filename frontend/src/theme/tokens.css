@@ -475,11 +475,15 @@ body {
     margin: 0 auto;
   }
 
-  /* Side sheets take the full width; a 378px drawer on a 390px screen leaves a
-     sliver of background that only invites a mis-tap. */
+  /* A side sheet is clamped to the screen but never covers all of it: the strip
+     of dimmed background left over is what you tap to dismiss it, and on a
+     navigation drawer with no close button it was the only way out. Forcing the
+     width to 100% here removed that strip and trapped the menu open.
+
+     56px matches the scrim Material leaves beside a modal drawer — wide enough
+     to hit deliberately, narrow enough not to waste the sheet's width. */
   .ant-drawer-content-wrapper {
-    width: 100% !important;
-    max-width: 100%;
+    max-width: calc(100% - 56px);
   }
 
   /* Menus and pickers must not push the page wider than the screen. */

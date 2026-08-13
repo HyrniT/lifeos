@@ -20,6 +20,7 @@ import {
   Timer,
   Trophy,
   Wallet,
+  X,
 } from 'lucide-react'
 import { useAppDispatch, useAppSelector, useIsMobile } from '@/app/hooks'
 import { sidebarToggled, themeToggled } from '@/app/uiSlice'
@@ -152,17 +153,35 @@ export function AppShell() {
       )
     })
 
-  const sidebarBody = (showLabels: boolean) => (
+  /**
+   * `onClose` is passed only by the mobile drawer, which is the one place this
+   * panel can be dismissed. Tapping the dimmed strip beside it works too, but
+   * that is a convention rather than something visible — a menu should not
+   * depend on the user already knowing the way out.
+   */
+  const sidebarBody = (showLabels: boolean, onClose?: () => void) => (
     <>
-      <NavLink to="/" className="lo-brand">
-        <span className="lo-brand__mark">L</span>
-        {showLabels && (
-          <span className="lo-brand__text">
-            <span className="lo-brand__name">LifeOS</span>
-            <span className="lo-brand__tag">habits · money · plans</span>
-          </span>
+      <div className="lo-brand-row">
+        <NavLink to="/" className="lo-brand">
+          <span className="lo-brand__mark">L</span>
+          {showLabels && (
+            <span className="lo-brand__text">
+              <span className="lo-brand__name">LifeOS</span>
+              <span className="lo-brand__tag">habits · money · plans</span>
+            </span>
+          )}
+        </NavLink>
+        {onClose && (
+          <button
+            type="button"
+            className="lo-iconbtn"
+            onClick={onClose}
+            aria-label="Close navigation"
+          >
+            <X size={20} />
+          </button>
         )}
-      </NavLink>
+      </div>
 
       <nav className="lo-nav" aria-label="Main">
         {renderNav(PRIMARY_NAV, showLabels)}
@@ -220,10 +239,15 @@ export function AppShell() {
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         width={280}
+        // The panel carries its own close button, so antd's header is not needed;
+        // `maskClosable` and `keyboard` are antd defaults, named here because
+        // dismissing this drawer is the whole point of the markup below.
         closable={false}
+        maskClosable
+        keyboard
         styles={{ body: { padding: '16px 12px', display: 'flex', flexDirection: 'column' } }}
       >
-        {sidebarBody(true)}
+        {sidebarBody(true, () => setDrawerOpen(false))}
       </Drawer>
 
       <div className="lo-main">
