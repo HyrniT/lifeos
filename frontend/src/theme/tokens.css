@@ -489,3 +489,53 @@ body {
     max-width: calc(100% - 16px);
   }
 }
+
+/* ==========================================================================
+   No auto-zoom when a field takes focus (iOS)
+
+   Safari on iPhone zooms the page whenever a focused control renders text
+   below 16px, and then leaves it zoomed — which is why tapping Category in a
+   dialog threw the layout sideways and had to be dragged back. The trigger is
+   the font size alone, so raising it on small screens removes the behaviour at
+   source.
+
+   The other common fix, `maximum-scale=1` or `user-scalable=no` on the viewport
+   meta, is deliberately not used: it stops the page zooming on tap by stopping
+   it zooming at all, including the deliberate pinch someone needs to read
+   something. Fixing the cause costs nothing and keeps that.
+
+   16px is the exact threshold, and it fits antd's 32px control height: 16px of
+   text at line-height 1.5 is 24px, plus 4px of padding top and bottom.
+   ========================================================================== */
+@media (max-width: 640px) {
+  /* `!important` is load-bearing here, not laziness. antd v5 generates its
+     component styles at runtime and injects them into <head>, so they land
+     after this bundled stylesheet and win every tie on specificity — measured:
+     without it these controls stayed at 14px and Safari still zoomed. */
+  .ant-input,
+  textarea.ant-input,
+  .ant-input-number-input,
+  .ant-input-affix-wrapper > input.ant-input,
+  .ant-select-selector,
+  .ant-select-selection-item,
+  .ant-select-selection-placeholder,
+  /* The element that actually receives focus in a Select — present even when
+     the select is not searchable, and the one Safari measures. */
+  .ant-select-selection-search-input,
+  .ant-picker input,
+  .ant-picker-input > input {
+    font-size: 16px !important;
+  }
+
+  /* Options are tap targets rather than text: give them a finger-sized row. */
+  .ant-select-item-option-content,
+  .ant-select-item {
+    font-size: 15px !important;
+  }
+
+  .ant-select-item {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+  }
+}
