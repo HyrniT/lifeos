@@ -30,10 +30,10 @@ import {
   ProgressRing,
   StatTile,
   TrendChart,
-  formatCurrency,
   formatMinutes,
   formatShortDate,
 } from '@/components/charts'
+import { formatMoney } from '@/app/money'
 import { DynamicIcon, EmptyState, FadeIn, PanelSkeleton, Section, StaggerItem, StaggerList } from '@/components/ui'
 
 function greeting(): string {
@@ -67,7 +67,6 @@ export function DashboardPage() {
   const [setTaskStatus] = useSetTaskStatusMutation()
 
   const stats = habitsToday?.stats
-  const currency = money?.overview.currency ?? user?.baseCurrency ?? 'USD'
 
   const cashFlow = useMemo(
     () =>
@@ -205,7 +204,7 @@ export function DashboardPage() {
         />
         <StatTile
           label="Spent today"
-          value={formatCurrency(spentToday, currency)}
+          value={formatMoney(spentToday)}
           delta={money?.overview.changeVsPreviousPeriod}
           deltaLabel="vs previous period"
           invertDelta
@@ -407,12 +406,12 @@ export function DashboardPage() {
               <TrendChart
                 title="Cash flow this month"
                 subtitle={`${dayjs(monthStart).format('D MMM')} – ${today.format('D MMM')}`}
-                summary={`Daily income and expense from ${monthStart} to ${todayIso}. Total spent ${formatCurrency(money?.overview.totalExpense ?? 0, currency)}, total earned ${formatCurrency(money?.overview.totalIncome ?? 0, currency)}.`}
+                summary={`Daily income and expense from ${monthStart} to ${todayIso}. Total spent ${formatMoney(money?.overview.totalExpense ?? 0)}, total earned ${formatMoney(money?.overview.totalIncome ?? 0)}.`}
                 hint="Transfers between your own accounts are excluded — moving money is not spending."
                 data={cashFlow}
                 xKey="date"
                 xFormatter={formatShortDate}
-                yFormatter={(value) => formatCurrency(value, currency, true)}
+                yFormatter={(value) => formatMoney(value, true)}
                 series={[
                   { key: 'expense', label: 'Spent' },
                   { key: 'income', label: 'Earned' },
@@ -426,8 +425,8 @@ export function DashboardPage() {
                 ]}
                 tableRows={cashFlow.map((row) => ({
                   date: row.date,
-                  expense: formatCurrency(row.expense, currency),
-                  income: formatCurrency(row.income, currency),
+                  expense: formatMoney(row.expense),
+                  income: formatMoney(row.income),
                 }))}
               />
             )}
@@ -438,7 +437,7 @@ export function DashboardPage() {
               This month
             </h3>
             <p style={{ margin: '0 0 20px', fontSize: 13, color: 'var(--on-surface-variant)' }}>
-              Net {formatCurrency(money?.overview.net ?? 0, currency)} · savings rate{' '}
+              Net {formatMoney(money?.overview.net ?? 0)} · savings rate{' '}
               {Math.round((money?.overview.savingsRate ?? 0) * 100)}%
             </p>
 
@@ -454,7 +453,7 @@ export function DashboardPage() {
                 >
                   <span style={{ fontWeight: 620 }}>{budget.name}</span>
                   <span className="tabular" style={{ color: 'var(--on-surface-variant)' }}>
-                    {formatCurrency(budget.spent, currency)} / {formatCurrency(budget.amount, currency)}
+                    {formatMoney(budget.spent)} / {formatMoney(budget.amount)}
                   </span>
                 </div>
                 <Progress
@@ -472,8 +471,8 @@ export function DashboardPage() {
                 />
                 <div style={{ fontSize: 12, color: 'var(--on-surface-muted)', marginTop: 4 }}>
                   {budget.state === 'EXCEEDED'
-                    ? `Over by ${formatCurrency(Math.abs(budget.remaining), currency)}`
-                    : `${formatCurrency(budget.safeDailySpend, currency)}/day for ${budget.daysLeft} more day${budget.daysLeft === 1 ? '' : 's'}`}
+                    ? `Over by ${formatMoney(Math.abs(budget.remaining))}`
+                    : `${formatMoney(budget.safeDailySpend)}/day for ${budget.daysLeft} more day${budget.daysLeft === 1 ? '' : 's'}`}
                 </div>
               </div>
             ))}

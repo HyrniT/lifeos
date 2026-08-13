@@ -9,6 +9,7 @@ import com.lifeos.auth.repo.UserRepository;
 import com.lifeos.common.event.DomainEvent;
 import com.lifeos.common.event.EventPublisher;
 import com.lifeos.common.event.Topics;
+import com.lifeos.common.api.Money;
 import com.lifeos.common.exception.ApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -19,8 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -90,8 +93,8 @@ public class AuthService {
                 .email(email)
                 .passwordHash(passwordEncoder.encode(req.password()))
                 .displayName(req.displayName().trim())
-                .timezone(blankTo(req.timezone(), "UTC"))
-                .baseCurrency(blankTo(req.baseCurrency(), "USD").toUpperCase())
+                .timezone(validZone(blankTo(req.timezone(), "UTC").trim()))
+                .baseCurrency(Money.BASE_CURRENCY)
                 .roles(new ArrayList<>(List.of("USER")))
                 .passwordChangedAt(Instant.now())
                 .build();
@@ -343,11 +346,12 @@ public class AuthService {
             user.setLocale(req.locale());
         }
         if (req.timezone() != null && !req.timezone().isBlank()) {
-            user.setTimezone(req.timezone());
+            user.setTimezone(validZone(req.timezone().trim()));
         }
-        if (req.baseCurrency() != null && !req.baseCurrency().isBlank()) {
-            user.setBaseCurrency(req.baseCurrency().toUpperCase());
-        }
+        // baseCurrency is intentionally not settable — see com.lifeos.common.api.Money.
+        // An older client may still send it; the field is normalised rather than
+        // rejected so such a request succeeds and simply changes nothing.
+        user.setBaseCurrency(Money.BASE_CURRENCY);
         User saved = users.save(user);
 
         // Other services keep a local projection of the timezone so their reminder
@@ -439,6 +443,25 @@ public class AuthService {
         payload.put("baseCurrency", user.getBaseCurrency());
         events.publish(Topics.USER_EVENTS,
                 DomainEvent.of(type, "User", user.getId().toString(), user.getId(), 0L, payload));
+    }
+
+    /**
+     * Rejects a timezone this system cannot act on, instead of storing it.
+     *
+     * Storing it is the tempting option and the wrong one. Downstream, each
+     * service treats an unparseable zone differently — habit and planning keep
+     * the *previous* zone and log a warning, notification silently falls back to
+     * UTC — so one bad string leaves the same account on three different clocks
+     * while Settings cheerfully displays the value the user typed. Failing the
+     * write is the only outcome the user can see and correct.
+     */
+    private static String validZone(String timezone) {
+        try {
+            return ZoneId.of(timezone).getId();
+        } catch (DateTimeException ex) {
+            throw ApiException.badRequest(
+                    "'" + timezone + "' is not a known time zone. Use an IANA identifier such as Europe/Zurich.");
+        }
     }
 
     private User require(UUID userId) {

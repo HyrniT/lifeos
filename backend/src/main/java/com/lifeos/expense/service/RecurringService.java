@@ -1,5 +1,6 @@
 package com.lifeos.expense.service;
 
+import com.lifeos.common.api.Money;
 import com.lifeos.common.exception.ApiException;
 import com.lifeos.expense.domain.ExpenseEnums.Cadence;
 import com.lifeos.expense.domain.RecurringRule;
@@ -50,7 +51,10 @@ public class RecurringService {
                 .accountId(req.accountId())
                 .categoryId(req.categoryId())
                 .amount(req.amount().abs())
-                .currency(req.currency() == null ? "USD" : req.currency().toUpperCase())
+                // Every row is in the one system currency, whatever the caller
+                // sent. This used to default to USD, which quietly gave a rule a
+                // different currency from the account it draws on.
+                .currency(Money.normalise(req.currency()))
                 .type(req.type())
                 .cadence(req.cadence() == null ? Cadence.MONTHLY : req.cadence())
                 .nextRunOn(req.nextRunOn())

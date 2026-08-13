@@ -1,15 +1,12 @@
-import { Form, Input, InputNumber, Modal, Select, message } from 'antd'
+import { Form, Input, Modal, Select, message } from 'antd'
 import { useCreateAccountMutation } from '@/app/api'
 import { errorMessage } from '@/app/baseQuery'
-import { useAppSelector } from '@/app/hooks'
-import { DynamicIcon } from '@/components/ui'
+import { DynamicIcon, MoneyInput } from '@/components/ui'
 
 const ICONS = ['wallet', 'banknote', 'landmark', 'credit-card', 'piggy-bank', 'smartphone', 'trending-up', 'coins']
-const CURRENCIES = ['USD', 'EUR', 'GBP', 'CHF', 'VND', 'JPY', 'SGD', 'AUD', 'CAD', 'INR']
 
 export function AccountModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [form] = Form.useForm()
-  const baseCurrency = useAppSelector((state) => state.auth.user?.baseCurrency ?? 'USD')
   const [create, { isLoading }] = useCreateAccountMutation()
   const type = Form.useWatch('type', form)
 
@@ -41,7 +38,6 @@ export function AccountModal({ open, onClose }: { open: boolean; onClose: () => 
         requiredMark={false}
         initialValues={{
           type: 'BANK',
-          currency: baseCurrency,
           icon: 'wallet',
           openingBalance: 0,
         }}
@@ -50,25 +46,19 @@ export function AccountModal({ open, onClose }: { open: boolean; onClose: () => 
           <Input placeholder="Main current account" autoFocus maxLength={80} />
         </Form.Item>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-          <Form.Item name="type" label="Type">
-            <Select
-              options={[
-                { value: 'CASH', label: 'Cash' },
-                { value: 'BANK', label: 'Bank' },
-                { value: 'CREDIT_CARD', label: 'Credit card' },
-                { value: 'E_WALLET', label: 'E-wallet' },
-                { value: 'SAVINGS', label: 'Savings' },
-                { value: 'INVESTMENT', label: 'Investment' },
-                { value: 'LOAN', label: 'Loan' },
-              ]}
-            />
-          </Form.Item>
-
-          <Form.Item name="currency" label="Currency">
-            <Select showSearch options={CURRENCIES.map((code) => ({ value: code, label: code }))} />
-          </Form.Item>
-        </div>
+        <Form.Item name="type" label="Type">
+          <Select
+            options={[
+              { value: 'CASH', label: 'Cash' },
+              { value: 'BANK', label: 'Bank' },
+              { value: 'CREDIT_CARD', label: 'Credit card' },
+              { value: 'E_WALLET', label: 'E-wallet' },
+              { value: 'SAVINGS', label: 'Savings' },
+              { value: 'INVESTMENT', label: 'Investment' },
+              { value: 'LOAN', label: 'Loan' },
+            ]}
+          />
+        </Form.Item>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
           <Form.Item
@@ -76,7 +66,7 @@ export function AccountModal({ open, onClose }: { open: boolean; onClose: () => 
             label="Starting balance"
             tooltip="What is in the account right now."
           >
-            <InputNumber style={{ width: '100%' }} step={10} />
+            <MoneyInput />
           </Form.Item>
 
           <Form.Item name="icon" label="Icon">
@@ -96,7 +86,7 @@ export function AccountModal({ open, onClose }: { open: boolean; onClose: () => 
 
         {type === 'CREDIT_CARD' && (
           <Form.Item name="creditLimit" label="Credit limit">
-            <InputNumber style={{ width: '100%' }} min={0} step={100} />
+            <MoneyInput min={0} />
           </Form.Item>
         )}
       </Form>

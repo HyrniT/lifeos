@@ -106,7 +106,7 @@ public class StatisticsService {
         String topCategory = breakdown.isEmpty() ? null : breakdown.get(0).name();
         BigDecimal biggest = breakdown.isEmpty() ? BigDecimal.ZERO : breakdown.get(0).amount();
 
-        String currency = allAccounts.isEmpty() ? "USD" : allAccounts.get(0).getCurrency();
+        String currency = allAccounts.isEmpty() ? "VND" : allAccounts.get(0).getCurrency();
 
         return new MoneyOverview(from, to, currency,
                 scale(income), scale(expense), scale(net), scale(netWorth), scale(liquid),

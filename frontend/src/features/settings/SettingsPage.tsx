@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
   Alert,
   Button,
@@ -30,11 +30,24 @@ import { errorMessage } from '@/app/baseQuery'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { profileUpdated } from '@/features/auth/authSlice'
 import { themeSet } from '@/app/uiSlice'
+import { BASE_CURRENCY } from '@/app/money'
 import { PageHeader } from '@/components/ui'
 import { NotificationSettings } from './NotificationSettings'
+import { deviceTimeZone, offsetLabel, timeZoneOptions } from './timezones'
 import type { TotpSetup, UserView } from '@/types'
 
-const CURRENCIES = ['USD', 'EUR', 'GBP', 'CHF', 'VND', 'JPY', 'SGD', 'AUD', 'CAD', 'INR']
+/** Wall-clock time in a zone right now, or '' if the zone is not a real one. */
+function localTimeIn(zone: string): string {
+  try {
+    return new Intl.DateTimeFormat(undefined, {
+      timeZone: zone,
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(new Date())
+  } catch {
+    return ''
+  }
+}
 
 export function SettingsPage() {
   const dispatch = useAppDispatch()
@@ -52,6 +65,13 @@ export function SettingsPage() {
   const [totp, setTotp] = useState<TotpSetup | null>(null)
   const [totpCode, setTotpCode] = useState('')
   const [recoveryCodes, setRecoveryCodes] = useState<string[] | null>(null)
+
+  const [profileForm] = Form.useForm<UserView>()
+  const deviceZone = deviceTimeZone()
+  // Several hundred zones, each needing an Intl formatter to price its offset:
+  // built once rather than on every keystroke in the search box.
+  const timezoneOptions = useMemo(() => timeZoneOptions(me?.timezone), [me?.timezone])
+  const selectedZone = Form.useWatch('timezone', profileForm) ?? me?.timezone
 
   const onSaveProfile = async (values: Partial<UserView>) => {
     try {
@@ -105,6 +125,7 @@ export function SettingsPage() {
             children: (
               <div className="lo-panel" style={{ maxWidth: 560 }}>
                 <Form
+                  form={profileForm}
                   layout="vertical"
                   requiredMark={false}
                   initialValues={me}
@@ -120,14 +141,62 @@ export function SettingsPage() {
                   </Form.Item>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                    <Form.Item name="baseCurrency" label="Main currency">
+                    {/* Shown rather than hidden so the unit every figure on the
+                        money screens is quoted in is never left to guesswork.
+                        Read-only: LifeOS stores one currency. */}
+                    <Form.Item
+                      label="Currency"
+                      extra={
+                        <span style={{ fontSize: 12 }}>
+                          Every amount in LifeOS is in {BASE_CURRENCY}.
+                        </span>
+                      }
+                    >
+                      <Input value={BASE_CURRENCY} disabled />
+                    </Form.Item>
+                    <Form.Item
+                      name="timezone"
+                      label="Time zone"
+                      // Reminders fire in this zone, so the useful confirmation is
+                      // not the identifier but the clock: "is it really 21:40
+                      // where I am?" answers it without knowing IANA naming.
+                      extra={
+                        <span style={{ fontSize: 12 }}>
+                          {selectedZone && localTimeIn(selectedZone)
+                            ? `Now ${localTimeIn(selectedZone)} there · ${offsetLabel(selectedZone)}`
+                            : 'Reminders and deadlines fire in this zone.'}
+                          {selectedZone !== deviceZone && (
+                            <>
+                              {' · '}
+                              <Typography.Link
+                                onClick={() => profileForm.setFieldValue('timezone', deviceZone)}
+                              >
+                                use this device
+                              </Typography.Link>
+                            </>
+                          )}
+                        </span>
+                      }
+                    >
                       <Select
                         showSearch
-                        options={CURRENCIES.map((code) => ({ value: code, label: code }))}
+                        placeholder="Search for a city or zone"
+                        // Match our own haystack (identifier, spaced name and
+                        // offset) instead of the rendered label, so "hochiminh"
+                        // and "+07" both find Asia/Ho_Chi_Minh.
+                        filterOption={(input, option) =>
+                          (option?.search ?? '').includes(input.trim().toLowerCase())
+                        }
+                        options={timezoneOptions}
+                        optionRender={(option) => (
+                          <div style={{ display: 'flex', gap: 12, justifyContent: 'space-between' }}>
+                            <span>{option.data.city}</span>
+                            <span className="tabular" style={{ color: 'var(--on-surface-muted)' }}>
+                              {option.data.offset}
+                            </span>
+                          </div>
+                        )}
                       />
-                    </Form.Item>
-                    <Form.Item name="timezone" label="Time zone">
-                      <Input placeholder="Europe/Zurich" />
                     </Form.Item>
                   </div>
 

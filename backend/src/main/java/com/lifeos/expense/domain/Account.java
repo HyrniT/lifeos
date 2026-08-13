@@ -40,7 +40,7 @@ public class Account {
 
     @Column(nullable = false, length = 3)
     @Builder.Default
-    private String currency = "USD";
+    private String currency = "VND";
 
     /**
      * Money is BigDecimal end to end. Doubles lose cents on anything with a long

@@ -49,7 +49,7 @@ public class DataSeeder {
                     .enabled(true)
                     .emailVerified(true)
                     .timezone("UTC")
-                    .baseCurrency("USD")
+                    .baseCurrency("VND")
                     .passwordChangedAt(Instant.now())
                     .build());
 

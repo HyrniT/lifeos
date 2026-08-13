@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { DatePicker, Form, Input, InputNumber, Modal, Segmented, Select, message } from 'antd'
+import { DatePicker, Form, Input, Modal, Segmented, Select, message } from 'antd'
 import dayjs from 'dayjs'
 import {
   useAccountsQuery,
@@ -8,7 +8,7 @@ import {
   useUpdateTransactionMutation,
 } from '@/app/api'
 import { errorMessage } from '@/app/baseQuery'
-import { DynamicIcon } from '@/components/ui'
+import { DynamicIcon, MoneyInput } from '@/components/ui'
 import type { Transaction, TxType } from '@/types'
 
 export function TransactionModal({
@@ -105,13 +105,7 @@ export function TransactionModal({
               },
             ]}
           >
-            <InputNumber
-              style={{ width: '100%' }}
-              min={0}
-              step={0.01}
-              autoFocus
-              placeholder="0.00"
-            />
+            <MoneyInput min={0} autoFocus placeholder="0" />
           </Form.Item>
 
           <Form.Item

@@ -1,13 +1,12 @@
 import { useState } from 'react'
-import { Alert, Button, Form, Input, Progress, Select, Typography } from 'antd'
+import { Alert, Button, Form, Input, Progress, Typography } from 'antd'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '@/app/hooks'
 import { credentialsUpdated } from './authSlice'
 import { useRegisterMutation, useSeedFinanceDefaultsMutation } from '@/app/api'
 import { errorMessage } from '@/app/baseQuery'
+import { BASE_CURRENCY } from '@/app/money'
 import '@/components/layout/shell.css'
-
-const CURRENCIES = ['USD', 'EUR', 'GBP', 'CHF', 'VND', 'JPY', 'SGD', 'AUD', 'CAD', 'INR']
 
 /**
  * Rough strength meter. It is a nudge, not a gate — the real policy (10+ chars
@@ -41,20 +40,20 @@ export function RegisterPage() {
     email: string
     password: string
     displayName: string
-    baseCurrency: string
   }) => {
     setError(null)
     try {
       const tokens = await register({
         ...values,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        baseCurrency: BASE_CURRENCY,
       }).unwrap()
       dispatch(credentialsUpdated(tokens))
 
       // A brand-new account with no accounts or categories is a dead end; seed
       // the starter set so the money screens are usable immediately.
       try {
-        await seedDefaults(values.baseCurrency).unwrap()
+        await seedDefaults(BASE_CURRENCY).unwrap()
       } catch {
         // Non-fatal: the user can seed from the accounts screen later.
       }
@@ -99,7 +98,6 @@ export function RegisterPage() {
             layout="vertical"
             onFinish={onSubmit}
             requiredMark={false}
-            initialValues={{ baseCurrency: 'USD' }}
           >
             <Form.Item
               name="displayName"
@@ -154,14 +152,6 @@ export function RegisterPage() {
                 </span>
               </div>
             )}
-
-            <Form.Item name="baseCurrency" label="Main currency">
-              <Select
-                size="large"
-                showSearch
-                options={CURRENCIES.map((code) => ({ value: code, label: code }))}
-              />
-            </Form.Item>
 
             <Button type="primary" size="large" block htmlType="submit" loading={isLoading}>
               Create account

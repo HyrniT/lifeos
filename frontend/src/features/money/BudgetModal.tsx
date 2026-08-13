@@ -1,7 +1,7 @@
-import { Form, Input, InputNumber, Modal, Select, Slider, message } from 'antd'
+import { Form, Input, Modal, Select, Slider, message } from 'antd'
 import { useCategoriesQuery, useCreateBudgetMutation } from '@/app/api'
 import { errorMessage } from '@/app/baseQuery'
-import { DynamicIcon } from '@/components/ui'
+import { DynamicIcon, MoneyInput } from '@/components/ui'
 
 export function BudgetModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [form] = Form.useForm()
@@ -66,7 +66,7 @@ export function BudgetModal({ open, onClose }: { open: boolean; onClose: () => v
             label="Limit"
             rules={[{ required: true, message: 'Set a limit' }]}
           >
-            <InputNumber style={{ width: '100%' }} min={0} step={10} placeholder="500" />
+            <MoneyInput min={0} placeholder="500000" />
           </Form.Item>
 
           <Form.Item name="period" label="Period">

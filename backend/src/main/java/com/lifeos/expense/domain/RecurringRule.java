@@ -53,7 +53,7 @@ public class RecurringRule {
 
     @Column(nullable = false, length = 3)
     @Builder.Default
-    private String currency = "USD";
+    private String currency = "VND";
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)

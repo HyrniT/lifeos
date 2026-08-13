@@ -3,6 +3,7 @@ package com.lifeos.expense.service;
 import com.lifeos.common.event.DomainEvent;
 import com.lifeos.common.event.EventPublisher;
 import com.lifeos.common.event.Topics;
+import com.lifeos.common.api.Money;
 import com.lifeos.common.exception.ApiException;
 import com.lifeos.expense.domain.*;
 import com.lifeos.expense.domain.ExpenseEnums.*;
@@ -382,8 +383,9 @@ public class LedgerService {
                 .orElseThrow(() -> ApiException.notFound("Account", id));
     }
 
+    /** Whatever the caller sent, rows are stored in the one system currency. */
     private static String currencyOr(String value) {
-        return (value == null || value.isBlank()) ? "USD" : value.toUpperCase();
+        return Money.normalise(value);
     }
 
     private static String orDefault(String value, String fallback) {

@@ -35,15 +35,14 @@ import {
   useToggleRecurringMutation,
   useTransactionsQuery,
 } from '@/app/api'
-import { useAppSelector } from '@/app/hooks'
 import {
   BarSeriesChart,
   DonutBreakdown,
   StatTile,
   TrendChart,
-  formatCurrency,
   formatShortDate,
 } from '@/components/charts'
+import { BASE_CURRENCY, formatMoney } from '@/app/money'
 import { DynamicIcon, EmptyState, PageHeader, PanelSkeleton, Section } from '@/components/ui'
 import { TransactionModal } from './TransactionModal'
 import { BudgetModal } from './BudgetModal'
@@ -53,7 +52,6 @@ import type { Transaction } from '@/types'
 const { RangePicker } = DatePicker
 
 export function MoneyPage() {
-  const user = useAppSelector((state) => state.auth.user)
   const [range, setRange] = useState<[Dayjs, Dayjs]>([dayjs().startOf('month'), dayjs()])
   const [tab, setTab] = useState('overview')
   const [txModal, setTxModal] = useState<{ open: boolean; tx?: Transaction | null }>({ open: false })
@@ -77,8 +75,7 @@ export function MoneyPage() {
   const [toggleRecurring] = useToggleRecurringMutation()
   const [seedDefaults, { isLoading: seeding }] = useSeedFinanceDefaultsMutation()
 
-  const currency = stats?.overview.currency ?? user?.baseCurrency ?? 'USD'
-  const money = (value: number, compact = false) => formatCurrency(value, currency, compact)
+  const money = (value: number, compact = false) => formatMoney(value, compact)
 
   const cashFlow = useMemo(
     () =>
@@ -116,7 +113,7 @@ export function MoneyPage() {
               loading={seeding}
               icon={<Plus size={15} />}
               onClick={async () => {
-                await seedDefaults(currency).unwrap()
+                await seedDefaults(BASE_CURRENCY).unwrap()
                 message.success('Starter accounts and categories created')
               }}
             >
@@ -461,7 +458,7 @@ export function MoneyPage() {
                           }}
                         >
                           {row.type === 'INCOME' ? '+' : row.type === 'TRANSFER' ? '' : '−'}
-                          {formatCurrency(Math.abs(value), row.currency)}
+                          {formatMoney(Math.abs(value))}
                         </span>
                       ),
                     },
@@ -712,11 +709,11 @@ export function MoneyPage() {
                           letterSpacing: '-0.02em',
                         }}
                       >
-                        {formatCurrency(account.currentBalance, account.currency)}
+                        {formatMoney(account.currentBalance)}
                       </div>
                       {account.creditLimit != null && (
                         <div style={{ fontSize: 12, color: 'var(--on-surface-muted)' }}>
-                          Limit {formatCurrency(account.creditLimit, account.currency)}
+                          Limit {formatMoney(account.creditLimit)}
                         </div>
                       )}
                     </div>

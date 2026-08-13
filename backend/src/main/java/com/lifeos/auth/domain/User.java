@@ -54,7 +54,7 @@ public class User {
 
     @Column(name = "base_currency", nullable = false, length = 3)
     @Builder.Default
-    private String baseCurrency = "USD";
+    private String baseCurrency = "VND";
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", schema = "auth", joinColumns = @JoinColumn(name = "user_id"))

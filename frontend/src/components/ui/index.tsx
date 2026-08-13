@@ -153,6 +153,8 @@ export function PageLoader({ label = 'Loading' }: { label?: string }) {
 /* ==========================================================================
    Motion helpers — one shared easing so the whole app moves the same way.
    ========================================================================== */
+export { MoneyInput } from './MoneyInput'
+
 export const EASE = [0.2, 0, 0, 1] as const
 
 export function FadeIn({

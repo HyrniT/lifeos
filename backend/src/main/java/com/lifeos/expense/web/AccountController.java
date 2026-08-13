@@ -1,5 +1,6 @@
 package com.lifeos.expense.web;
 
+import com.lifeos.common.api.Money;
 import com.lifeos.common.security.UserPrincipal;
 import com.lifeos.expense.dto.ExpenseDtos.AccountRequest;
 import com.lifeos.expense.dto.ExpenseDtos.AccountResponse;
@@ -63,8 +64,10 @@ public class AccountController {
     @PostMapping("/seed-defaults")
     @Operation(summary = "Create the starter accounts and categories for a new user")
     public List<AccountResponse> seed(@AuthenticationPrincipal UserPrincipal me,
-                                      @RequestParam(defaultValue = "USD") String currency) {
-        ledger.seedDefaults(me.id(), currency.toUpperCase());
+                                      @RequestParam(required = false) String currency) {
+        // The parameter is accepted for compatibility with clients that still send
+        // one, and normalised away: this system stores a single currency.
+        ledger.seedDefaults(me.id(), Money.normalise(currency));
         return ledger.listAccounts(me.id(), false);
     }
 }

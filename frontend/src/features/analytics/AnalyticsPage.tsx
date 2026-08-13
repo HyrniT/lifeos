@@ -3,16 +3,15 @@ import { Alert, Segmented, Tag } from 'antd'
 import dayjs from 'dayjs'
 import { Activity, Coins, Flame, Link2, Timer } from 'lucide-react'
 import { useLifeOverviewQuery } from '@/app/api'
-import { useAppSelector } from '@/app/hooks'
 import {
   BalanceRadar,
   StatTile,
   TrendChart,
-  formatCurrency,
   formatMinutes,
   formatPercent,
   formatShortDate,
 } from '@/components/charts'
+import { formatMoney } from '@/app/money'
 import { EmptyState, PageHeader, PanelSkeleton, Section } from '@/components/ui'
 
 const WINDOWS = [
@@ -24,7 +23,6 @@ const WINDOWS = [
 
 export function AnalyticsPage() {
   const [days, setDays] = useState(90)
-  const currency = useAppSelector((state) => state.auth.user?.baseCurrency ?? 'USD')
 
   const to = dayjs().format('YYYY-MM-DD')
   const from = dayjs().subtract(days - 1, 'day').format('YYYY-MM-DD')
@@ -77,8 +75,8 @@ export function AnalyticsPage() {
             />
             <StatTile
               label="Net"
-              value={formatCurrency(data.totalEarned - data.totalSpent, currency, true)}
-              caption={`${formatCurrency(data.averageDailySpend, currency)}/day spent`}
+              value={formatMoney(data.totalEarned - data.totalSpent, true)}
+              caption={`${formatMoney(data.averageDailySpend)}/day spent`}
               icon={<Coins size={17} />}
             />
             <StatTile
@@ -134,12 +132,12 @@ export function AnalyticsPage() {
               <TrendChart
                 title="Daily spending"
                 subtitle="Plotted on its own axis, deliberately"
-                summary={`Daily spending between ${from} and ${to}, totalling ${formatCurrency(data.totalSpent, currency)}.`}
+                summary={`Daily spending between ${from} and ${to}, totalling ${formatMoney(data.totalSpent)}.`}
                 data={timeline}
                 xKey="date"
                 xFormatter={formatShortDate}
-                yFormatter={(value) => formatCurrency(value, currency, true)}
-                series={[{ key: 'expense', label: 'Spent', format: (v) => formatCurrency(v, currency) }]}
+                yFormatter={(value) => formatMoney(value, true)}
+                series={[{ key: 'expense', label: 'Spent', format: (v) => formatMoney(v) }]}
                 variant="area"
                 height={220}
                 tableColumns={[
@@ -148,7 +146,7 @@ export function AnalyticsPage() {
                 ]}
                 tableRows={timeline.map((row) => ({
                   date: row.date,
-                  expense: formatCurrency(row.expense, currency),
+                  expense: formatMoney(row.expense),
                 }))}
               />
             </div>
