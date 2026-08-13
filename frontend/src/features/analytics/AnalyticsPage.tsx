@@ -84,7 +84,7 @@ export function AnalyticsPage() {
             <StatTile
               label="Focused"
               value={formatMinutes(data.totalFocusMinutes)}
-              caption={`${data.totalTasksCompleted} tasks completed`}
+              caption={`${data.totalTasksCompleted} task${data.totalTasksCompleted === 1 ? '' : 's'} completed`}
               icon={<Timer size={17} />}
             />
           </div>
@@ -185,7 +185,9 @@ export function AnalyticsPage() {
                     </p>
                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                       <Tag style={{ margin: 0 }}>r = {correlation.strength.toFixed(2)}</Tag>
-                      <Tag style={{ margin: 0 }}>{correlation.sampleDays} days of data</Tag>
+                      <Tag style={{ margin: 0 }}>
+                        {correlation.sampleDays} day{correlation.sampleDays === 1 ? '' : 's'} of data
+                      </Tag>
                       <Tag style={{ margin: 0 }}>{correlation.direction}</Tag>
                     </div>
                   </div>

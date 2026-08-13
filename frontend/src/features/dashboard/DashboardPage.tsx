@@ -473,7 +473,7 @@ export function DashboardPage() {
                 <div style={{ fontSize: 12, color: 'var(--on-surface-muted)', marginTop: 4 }}>
                   {budget.state === 'EXCEEDED'
                     ? `Over by ${formatCurrency(Math.abs(budget.remaining), currency)}`
-                    : `${formatCurrency(budget.safeDailySpend, currency)}/day for ${budget.daysLeft} more days`}
+                    : `${formatCurrency(budget.safeDailySpend, currency)}/day for ${budget.daysLeft} more day${budget.daysLeft === 1 ? '' : 's'}`}
                 </div>
               </div>
             ))}

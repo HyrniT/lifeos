@@ -301,9 +301,12 @@ export function formatPercent(ratio: number, digits = 0): string {
 }
 
 export function formatMinutes(minutes: number): string {
-  if (minutes < 60) return `${Math.round(minutes)}m`
-  const hours = Math.floor(minutes / 60)
-  const rest = Math.round(minutes % 60)
+  // Round to whole minutes *first*: rounding the remainder on its own turns
+  // 119.7 into "1h 60m", and 59.6 into "60m" instead of "1h".
+  const total = Math.round(minutes)
+  if (total < 60) return `${total}m`
+  const hours = Math.floor(total / 60)
+  const rest = total % 60
   return rest === 0 ? `${hours}h` : `${hours}h ${rest}m`
 }
 

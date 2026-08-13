@@ -6,13 +6,28 @@ import { Flag, Plus, Target } from 'lucide-react'
 import { useCreateGoalMutation, useGoalsQuery, useUpdateGoalMutation } from '@/app/api'
 import { errorMessage } from '@/app/baseQuery'
 import { DynamicIcon, EmptyState, PageHeader, PanelSkeleton, StaggerItem, StaggerList } from '@/components/ui'
-import type { Goal } from '@/types'
+import type { Goal, GoalStatus } from '@/types'
 
 const PACE_COPY: Record<string, string> = {
   ahead: 'Ahead of schedule',
   'on-track': 'On track',
   behind: 'Behind schedule',
   unknown: 'No deadline set',
+}
+
+/* Short form for the corner tag. `unknown` is deliberately absent: it is a
+   sentinel for "no deadline", not a state worth showing, and the footer already
+   says so in words. */
+const PACE_TAG: Record<string, string> = {
+  ahead: 'ahead',
+  'on-track': 'on track',
+  behind: 'behind',
+}
+
+const STATUS_TAG: Partial<Record<GoalStatus, string>> = {
+  ACHIEVED: 'achieved',
+  PAUSED: 'paused',
+  ABANDONED: 'abandoned',
 }
 
 export function GoalsPage() {
@@ -98,18 +113,23 @@ export function GoalsPage() {
                         {goal.targetDate && ` · due ${dayjs(goal.targetDate).format('D MMM YYYY')}`}
                       </div>
                     </div>
-                    <Tag
-                      style={{ margin: 0 }}
-                      color={
-                        goal.status === 'ACHIEVED'
-                          ? 'success'
-                          : goal.pace === 'behind'
-                            ? 'warning'
-                            : 'default'
-                      }
-                    >
-                      {goal.status === 'ACHIEVED' ? 'achieved' : goal.pace}
-                    </Tag>
+                    {/* A finished or parked goal is described by its status; only a
+                        live one is described by its pace. Neither is shown when
+                        there is nothing meaningful to say. */}
+                    {(STATUS_TAG[goal.status] ?? PACE_TAG[goal.pace]) && (
+                      <Tag
+                        style={{ margin: 0 }}
+                        color={
+                          goal.status === 'ACHIEVED'
+                            ? 'success'
+                            : goal.status === 'ACTIVE' && goal.pace === 'behind'
+                              ? 'warning'
+                              : 'default'
+                        }
+                      >
+                        {STATUS_TAG[goal.status] ?? PACE_TAG[goal.pace]}
+                      </Tag>
+                    )}
                   </div>
 
                   <Progress
@@ -170,7 +190,7 @@ export function GoalsPage() {
                   {goal.status === 'ACTIVE' && (
                     <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
                       <Button size="small" onClick={() => bumpProgress(goal, -1)}>
-                        âˆ’1
+                        −1
                       </Button>
                       <Button size="small" type="primary" onClick={() => bumpProgress(goal, 1)}>
                         +1 {goal.unit}

@@ -1,6 +1,6 @@
 ﻿/**
  * Renders the real app in Chromium, signs in, walks every screen and captures a
- * screenshot of each. Fails loudly on any console error or unhandled rejection â€”
+ * screenshot of each. Fails loudly on any console error or unhandled rejection —
  * a build that compiles can still render a blank page.
  *
  *   node scripts/visual-check.mjs

@@ -177,7 +177,9 @@ export function HabitsPage() {
                               ? `${habit.targetPerPeriod}× per week`
                               : habit.frequency === 'MONTHLY_TARGET'
                                 ? `${habit.targetPerPeriod}× per month`
-                                : `Every ${habit.intervalDays} days`}
+                                : habit.intervalDays === 1
+                                  ? 'Every day'
+                                  : `Every ${habit.intervalDays} days`}
                         {' · '}
                         {habit.difficulty.toLowerCase()}
                       </span>
