@@ -231,7 +231,7 @@ export function GoalsPage() {
             <Input placeholder="Read 24 books" autoFocus maxLength={200} />
           </Form.Item>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
+          <div className="lo-form-grid lo-form-grid--3">
             <Form.Item name="targetValue" label="Target">
               <InputNumber style={{ width: '100%' }} min={1} />
             </Form.Item>
@@ -243,7 +243,7 @@ export function GoalsPage() {
             </Form.Item>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div className="lo-form-grid">
             <Form.Item name="startDate" label="Start">
               <DatePicker style={{ width: '100%' }} format="D MMM YYYY" />
             </Form.Item>
@@ -252,7 +252,7 @@ export function GoalsPage() {
             </Form.Item>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div className="lo-form-grid">
             <Form.Item name="category" label="Area">
               <Select
                 options={['personal', 'health', 'career', 'finance', 'learning', 'relationships'].map(

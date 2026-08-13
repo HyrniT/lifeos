@@ -39,7 +39,6 @@ export function AccountModal({ open, onClose }: { open: boolean; onClose: () => 
         initialValues={{
           type: 'BANK',
           icon: 'wallet',
-          openingBalance: 0,
         }}
       >
         <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Name the account' }]}>
@@ -60,7 +59,7 @@ export function AccountModal({ open, onClose }: { open: boolean; onClose: () => 
           />
         </Form.Item>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div className="lo-form-grid">
           <Form.Item
             name="openingBalance"
             label="Starting balance"

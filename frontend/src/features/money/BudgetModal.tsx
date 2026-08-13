@@ -60,13 +60,13 @@ export function BudgetModal({ open, onClose }: { open: boolean; onClose: () => v
           />
         </Form.Item>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div className="lo-form-grid">
           <Form.Item
             name="amount"
             label="Limit"
             rules={[{ required: true, message: 'Set a limit' }]}
           >
-            <MoneyInput min={0} placeholder="500000" />
+            <MoneyInput min={0} placeholder="500.000" />
           </Form.Item>
 
           <Form.Item name="period" label="Period">

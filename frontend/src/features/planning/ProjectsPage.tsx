@@ -339,7 +339,7 @@ export function ProjectsPage() {
             <Input placeholder="Move house" autoFocus maxLength={120} />
           </Form.Item>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div className="lo-form-grid">
             <Form.Item name="status" label="Status">
               <Select
                 options={(Object.keys(STATUS_LABEL) as ProjectStatus[]).map((value) => ({
@@ -353,7 +353,7 @@ export function ProjectsPage() {
             </Form.Item>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div className="lo-form-grid">
             <Form.Item name="icon" label="Icon">
               <Select
                 options={ICONS.map((icon) => ({

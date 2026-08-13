@@ -92,7 +92,7 @@ export function TransactionModal({
           />
         </Form.Item>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div className="lo-form-grid">
           <Form.Item
             name="amount"
             label="Amount"
@@ -105,7 +105,7 @@ export function TransactionModal({
               },
             ]}
           >
-            <MoneyInput min={0} autoFocus placeholder="0" />
+            <MoneyInput min={0} autoFocus placeholder="50.000" />
           </Form.Item>
 
           <Form.Item
@@ -172,7 +172,7 @@ export function TransactionModal({
           </Form.Item>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div className="lo-form-grid">
           <Form.Item name="merchant" label="Merchant">
             <Input placeholder="Where?" maxLength={120} />
           </Form.Item>

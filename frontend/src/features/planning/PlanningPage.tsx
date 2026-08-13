@@ -415,7 +415,7 @@ export function PlanningPage() {
             <Input placeholder="Draft the quarterly review" autoFocus maxLength={200} />
           </Form.Item>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div className="lo-form-grid">
             <Form.Item name="dueDate" label="Due">
               <DatePicker style={{ width: '100%' }} format="D MMM YYYY" />
             </Form.Item>
@@ -429,7 +429,7 @@ export function PlanningPage() {
             </Form.Item>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div className="lo-form-grid">
             <Form.Item name="projectId" label="Project">
               <Select
                 allowClear

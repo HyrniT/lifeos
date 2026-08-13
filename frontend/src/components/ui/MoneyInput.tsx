@@ -58,11 +58,15 @@ export function MoneyInput({
           controls={false}
           // Grouped while typing; the parser strips anything that is not a digit
           // so pasted text like "260.000 ₫" is accepted rather than rejected.
-          formatter={(raw) =>
-            raw === undefined || raw === null
-              ? ''
-              : new Intl.NumberFormat('vi-VN').format(Number(raw))
-          }
+          //
+          // The empty-string check is the important one. rc-input-number hands
+          // the formatter `''` for an empty field, and `Number('')` is 0 — which
+          // is how the field used to open showing a 0 that had to be deleted
+          // before anything could be typed.
+          formatter={(raw) => {
+            const text = raw === undefined || raw === null ? '' : String(raw)
+            return text === '' ? '' : new Intl.NumberFormat('vi-VN').format(Number(text))
+          }}
           parser={(display) => {
             const digits = (display ?? '').replace(/[^\d]/g, '')
             return digits ? Number(digits) : (null as unknown as number)

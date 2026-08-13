@@ -362,3 +362,130 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
   border-radius: inherit;
 }
+
+/* ==========================================================================
+   Responsive dialogs
+
+   A dialog on a phone had been a desktop dialog scaled down: a fixed 520px
+   card on a 390px viewport, so the form ran off both edges and the page behind
+   it scrolled whenever a drag missed. Two rules fix that.
+
+   A form dialog becomes the screen. Nothing is scaled, nothing is cropped, and
+   only the body scrolls — the title and the buttons stay put, so "Save" is
+   always reachable without hunting for it.
+
+   A confirmation stays a card. It is a sentence and two buttons; blowing that
+   up to full screen reads as a page change rather than a question, and loses
+   the sense that the thing behind is still there.
+   ========================================================================== */
+
+/* Two- and three-column form rows that fold to one column when there is no
+   room. Fixed `1fr 1fr` inline styles cannot be overridden by a media query,
+   which is why these are classes. */
+.lo-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.lo-form-grid--3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media (max-width: 640px) {
+  .lo-form-grid,
+  .lo-form-grid--3 {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+/* Scrolling inside a dialog must not chain to the page underneath it — that is
+   what made the background drift while scrolling the form. */
+.ant-modal-wrap,
+.ant-modal-body,
+.ant-drawer-body {
+  overscroll-behavior: contain;
+}
+
+@media (max-width: 640px) {
+  .ant-modal-wrap {
+    overflow: hidden;
+  }
+
+  /* Sized against `.ant-modal-wrap`, which is `position: fixed; inset: 0` and so
+     is already exactly the viewport. Percentages rather than `100vw`/`100dvh` on
+     purpose: `100vw` counts the classic scrollbar, which makes the dialog wider
+     than the space available and puts a horizontal scrollbar under it.
+     `!important` because antd sets the width inline from the `width` prop. */
+  .ant-modal:not(.ant-modal-confirm) {
+    top: 0;
+    max-width: 100% !important;
+    width: 100% !important;
+    height: 100%;
+    margin: 0;
+    padding-bottom: 0;
+  }
+
+  .ant-modal:not(.ant-modal-confirm) .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .ant-modal:not(.ant-modal-confirm) .ant-modal-header {
+    margin: 0;
+    padding: 16px 52px 12px 16px; /* room for the close button */
+    border-bottom: 1px solid var(--outline-variant);
+  }
+
+  .ant-modal:not(.ant-modal-confirm) .ant-modal-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+  }
+
+  /* Pinned, so the primary action never has to be scrolled to. */
+  .ant-modal:not(.ant-modal-confirm) .ant-modal-footer {
+    margin: 0;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--outline-variant);
+    background: var(--surface);
+  }
+
+  /* Full-width buttons in a dialog footer: easier to hit, and they stop the
+     pair from wrapping awkwardly on a narrow screen. */
+  .ant-modal:not(.ant-modal-confirm) .ant-modal-footer .ant-btn {
+    flex: 1;
+    margin-inline-start: 0;
+  }
+
+  .ant-modal:not(.ant-modal-confirm) .ant-modal-footer {
+    display: flex;
+    gap: 8px;
+  }
+
+  /* A confirmation keeps its card shape, just inside the viewport. */
+  .ant-modal-confirm {
+    max-width: calc(100% - 32px) !important;
+    margin: 0 auto;
+  }
+
+  /* Side sheets take the full width; a 378px drawer on a 390px screen leaves a
+     sliver of background that only invites a mis-tap. */
+  .ant-drawer-content-wrapper {
+    width: 100% !important;
+    max-width: 100%;
+  }
+
+  /* Menus and pickers must not push the page wider than the screen. */
+  .ant-popover,
+  .ant-dropdown,
+  .ant-picker-dropdown {
+    max-width: calc(100% - 16px);
+  }
+}

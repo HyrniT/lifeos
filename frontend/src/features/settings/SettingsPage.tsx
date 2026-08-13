@@ -140,7 +140,7 @@ export function SettingsPage() {
                     <Input value={me?.email} disabled />
                   </Form.Item>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                  <div className="lo-form-grid">
                     {/* Shown rather than hidden so the unit every figure on the
                         money screens is quoted in is never left to guesswork.
                         Read-only: LifeOS stores one currency. */}

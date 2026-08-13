@@ -112,7 +112,7 @@ export function HabitFormModal({
           <Input placeholder="Read for 20 minutes" autoFocus maxLength={120} />
         </Form.Item>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div className="lo-form-grid">
           <Form.Item name="icon" label="Icon">
             <Select
               showSearch
@@ -172,7 +172,7 @@ export function HabitFormModal({
           </Form.Item>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
+        <div className="lo-form-grid lo-form-grid--3">
           <Form.Item name="unit" label="Unit">
             <Select
               options={[
@@ -210,7 +210,7 @@ export function HabitFormModal({
           </Form.Item>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div className="lo-form-grid">
           <Form.Item name="category" label="Category">
             <Select
               options={[
