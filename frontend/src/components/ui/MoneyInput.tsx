@@ -1,4 +1,4 @@
-import { Button, InputNumber, Tooltip } from 'antd'
+import { Button, InputNumber } from 'antd'
 import { BASE_CURRENCY, formatMoney } from '@/app/money'
 
 /**
@@ -10,9 +10,9 @@ import { BASE_CURRENCY, formatMoney } from '@/app/money'
  * does three things a plain number box does not.
  *
  * It groups as you type (`260.000`), so the magnitude is readable rather than
- * counted. It offers zero-append buttons, because "26" then `000` is fewer,
- * larger targets than six digits on a phone keypad. And it echoes the value
- * back formatted underneath, which is where an extra zero actually gets caught.
+ * counted. It offers a `000` button, because "26" then one tap is fewer, larger
+ * targets than six digits on a phone keypad. And it echoes the value back
+ * formatted underneath, which is where an extra zero actually gets caught.
  *
  * Written as a controlled `value`/`onChange` pair so it drops straight into an
  * antd `Form.Item` in place of an `InputNumber`.
@@ -35,7 +35,7 @@ export function MoneyInput({
   const current = value ?? null
 
   // Appending zeros is multiplication, but only once there is something to
-  // multiply — otherwise the buttons would sit there doing nothing to a 0.
+  // multiply — otherwise the button would sit there doing nothing to a 0.
   const appendZeros = (count: number) => {
     if (!current) return
     onChange?.(current * 10 ** count)
@@ -68,21 +68,16 @@ export function MoneyInput({
             return digits ? Number(digits) : (null as unknown as number)
           }}
         />
-        {[
-          { label: '000', zeros: 3, hint: 'Add three zeros — thousands' },
-          { label: '00', zeros: 2, hint: 'Add two zeros — hundreds' },
-        ].map(({ label, zeros, hint }) => (
-          <Tooltip key={label} title={hint}>
-            <Button
-              className="tabular"
-              onClick={() => appendZeros(zeros)}
-              disabled={!canAppend}
-              style={{ minWidth: 48 }}
-            >
-              {label}
-            </Button>
-          </Tooltip>
-        ))}
+        {/* No label or tooltip: "000" on a button next to an amount already
+            says what it does, and everyday VND sums are thousands anyway. */}
+        <Button
+          className="tabular"
+          onClick={() => appendZeros(3)}
+          disabled={!canAppend}
+          style={{ minWidth: 52 }}
+        >
+          000
+        </Button>
       </div>
 
       {/* The check against a mistyped zero. Only shown once there is a figure,

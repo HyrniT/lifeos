@@ -190,7 +190,7 @@ export function GoalsPage() {
                   {goal.status === 'ACTIVE' && (
                     <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
                       <Button size="small" onClick={() => bumpProgress(goal, -1)}>
-                        −1
+                        −1 {goal.unit}
                       </Button>
                       <Button size="small" type="primary" onClick={() => bumpProgress(goal, 1)}>
                         +1 {goal.unit}
